@@ -410,7 +410,7 @@ Several JavaScript libraries allow you to overriding default settings to have a 
 
 #### XMLHttpRequest (Native JavaScript)
 
-XMLHttpRequest's open() method can be overridden to set the `anti-csrf-token` header whenever the `open()` method is invoked next. The function `csrfSafeMethod()` defined below will filter out the safe HTTP methods and only add the header to unsafe HTTP methods.
+XMLHttpRequest's open() method can be overridden to set the `X-CSRF-Token` header whenever the `open()` method is invoked next. The function `csrfSafeMethod()` defined below will filter out the safe HTTP methods and only add the header to unsafe HTTP methods.
 
 This can be done as demonstrated in the following code snippet:
 
@@ -426,7 +426,7 @@ This can be done as demonstrated in the following code snippet:
         var res = o.apply(this, arguments);
         var err = new Error();
         if (!csrfSafeMethod(arguments[0])) {
-            this.setRequestHeader('anti-csrf-token', csrf_token);
+            this.setRequestHeader('X-CSRF-Token', csrf_token);
         }
         return res;
     };
@@ -470,14 +470,14 @@ This code snippet has been tested with AngularJS version 1.7.7.
 <script type="text/javascript">
     var csrf_token = document.querySelector("meta[name='csrf-token']").getAttribute("content");
 
-    axios.defaults.headers.post['anti-csrf-token'] = csrf_token;
-    axios.defaults.headers.put['anti-csrf-token'] = csrf_token;
-    axios.defaults.headers.delete['anti-csrf-token'] = csrf_token;
-    axios.defaults.headers.patch['anti-csrf-token'] = csrf_token;
+    axios.defaults.headers.post['X-CSRF-Token'] = csrf_token;
+    axios.defaults.headers.put['X-CSRF-Token'] = csrf_token;
+    axios.defaults.headers.delete['X-CSRF-Token'] = csrf_token;
+    axios.defaults.headers.patch['X-CSRF-Token'] = csrf_token;
 
     // Axios does not create an object for TRACE method by default, and has to be created manually.
     axios.defaults.headers.trace = {}
-    axios.defaults.headers.trace['anti-csrf-token'] = csrf_token
+    axios.defaults.headers.trace['X-CSRF-Token'] = csrf_token
 </script>
 ```
 
@@ -485,7 +485,7 @@ This code snippet has been tested with Axios version 0.18.0.
 
 #### JQuery
 
-JQuery exposes an API called `$.ajaxSetup()` which can be used to add the `anti-csrf-token` header to the AJAX request. API documentation for `$.ajaxSetup()` can be found here. The function `csrfSafeMethod()` defined below will filter out the safe HTTP methods and only add the header to unsafe HTTP methods.
+JQuery exposes an API called `$.ajaxSetup()` which can be used to add the `X-CSRF-Token` header to the AJAX request. API documentation for `$.ajaxSetup()` can be found here. The function `csrfSafeMethod()` defined below will filter out the safe HTTP methods and only add the header to unsafe HTTP methods.
 
 You can configure jQuery to automatically add the token to all request headers by adopting the following code snippet. This provides a simple and convenient CSRF protection for your AJAX based applications:
 
@@ -501,7 +501,7 @@ You can configure jQuery to automatically add the token to all request headers b
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("anti-csrf-token", csrf_token);
+                xhr.setRequestHeader("X-CSRF-Token", csrf_token);
             }
         }
     });
